@@ -26,8 +26,8 @@ public class ReactNativeAudioStreamingModule extends ReactContextBaseJavaModule
   private Class<?> clsActivity;
   private static Signal signal;
   private Intent bindIntent;
-  private String streamingURL;
   private boolean shouldShowNotification;
+
 
   public ReactNativeAudioStreamingModule(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -85,15 +85,13 @@ public class ReactNativeAudioStreamingModule extends ReactContextBaseJavaModule
   }
 
   @ReactMethod public void play(String streamingURL, ReadableMap options) {
-    this.streamingURL = streamingURL;
-    this.shouldShowNotification =
-        options.hasKey(SHOULD_SHOW_NOTIFICATION) && options.getBoolean(SHOULD_SHOW_NOTIFICATION);
-    signal.setURLStreaming(streamingURL); // URL of MP3 or AAC stream
-    playInternal();
+    this.shouldShowNotification = options.hasKey(SHOULD_SHOW_NOTIFICATION) && options.getBoolean(SHOULD_SHOW_NOTIFICATION);
+    playInternal(streamingURL);
   }
 
-  private void playInternal() {
-    signal.play();
+  private void playInternal(String streamingURL) {
+    signal.play(streamingURL);
+
     if (shouldShowNotification) {
       signal.showNotification();
     }
@@ -104,22 +102,27 @@ public class ReactNativeAudioStreamingModule extends ReactContextBaseJavaModule
   }
 
   @ReactMethod public void pause() {
-    // Not implemented on aac
     this.stop();
   }
 
   @ReactMethod public void resume() {
     // Not implemented on aac
-    playInternal();
+    signal.resume();
   }
 
   @ReactMethod public void destroyNotification() {
     signal.exitNotification();
   }
 
+  @ReactMethod public void seekToTime(int seconds) {
+    signal.seekTo(seconds * 1000);
+  }
+
   @ReactMethod public void getStatus(Callback callback) {
     WritableMap state = Arguments.createMap();
-    state.putString("status", signal != null && signal.isPlaying ? Mode.PLAYING : Mode.STOPPED);
+    state.putDouble("duration", signal.getDuration());
+    state.putDouble("progress", signal.getCurrentPosition());
+    state.putString("status", signal != null && signal.isPlaying() ? Mode.PLAYING : Mode.STOPPED);
     callback.invoke(null, state);
   }
 }
