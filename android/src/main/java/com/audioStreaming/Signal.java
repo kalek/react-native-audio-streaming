@@ -140,7 +140,7 @@ public class Signal extends Service implements ExoPlayer.EventListener, Metadata
                 }
                 break;
             case ExoPlayer.STATE_ENDED:
-                sendBroadcast(new Intent(Mode.BUFFERING_START));
+                sendBroadcast(new Intent(Mode.STOPPED));
                 break;
         }
     }
