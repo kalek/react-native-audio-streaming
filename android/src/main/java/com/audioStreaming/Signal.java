@@ -335,11 +335,7 @@ public class Signal extends Service implements ExoPlayer.EventListener, Metadata
 
     public void showNotification() {
         remoteViews = new RemoteViews(context.getPackageName(), R.layout.streaming_notification_player);
-        notifyBuilder = new NotificationCompat.Builder(this.context)
-                .setSmallIcon(android.R.drawable.ic_lock_silent_mode_off) // TODO Use app icon instead
-                .setContentText("")
-                .setOngoing(true)
-                .setContent(remoteViews);
+        notifyBuilder = new NotificationCompat.Builder(this.context);
 
         Intent resultIntent = new Intent(this.context, this.clsActivity);
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
