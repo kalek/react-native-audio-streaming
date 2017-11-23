@@ -335,7 +335,8 @@ public class Signal extends Service implements ExoPlayer.EventListener, Metadata
 
     public void showNotification() {
         remoteViews = new RemoteViews(context.getPackageName(), R.layout.streaming_notification_player);
-        notifyBuilder = new NotificationCompat.Builder(this.context);
+        notifyBuilder = new NotificationCompat.Builder(this.context)
+            .setContent(remoteViews);
 
         Intent resultIntent = new Intent(this.context, this.clsActivity);
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -352,11 +353,15 @@ public class Signal extends Service implements ExoPlayer.EventListener, Metadata
         remoteViews.setOnClickPendingIntent(R.id.btn_streaming_notification_play, makePendingIntent(BROADCAST_PLAYBACK_PLAY));
         remoteViews.setOnClickPendingIntent(R.id.btn_streaming_notification_stop, makePendingIntent(BROADCAST_EXIT));
         notifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        startForeground(NOTIFY_ME_ID, notifyBuilder.build());
+        notifyManager.notify(NOTIFY_ME_ID, notifyBuilder.build());
+        // startForeground(NOTIFY_ME_ID, notifyBuilder.build());
     }
 
     public void clearNotification() {
-        stopForeground(false);
+        if (notifyManager != null) {
+            notifyManager.cancel(NOTIFY_ME_ID);
+        }
+        // stopForeground(true);
     }
 
     public void exitNotification() {
