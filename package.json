@@ -59,7 +59,9 @@
   "bugs": {
     "url": "https://github.com/tlenclos/react-native-audio-streaming/issues"
   },
-  "dependencies": {},
+  "dependencies": {
+    "prop-types": "^15.7.2"
+  },
   "description": "React native audio streaming library for android and iOS",
   "devDependencies": {
     "react-native": ">=0.31.0"
